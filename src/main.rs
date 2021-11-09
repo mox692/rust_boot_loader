@@ -6,7 +6,7 @@
 
 use core::panic::PanicInfo;
 
-static HELLO: &[u8] = b"Hello World!";
+mod writer;
 
 // リンカに_startというシンボルでエントリを渡すために、コンパイラにmanglingを禁止させる
 // ref: https://en.wikipedia.org/wiki/Name_mangling
@@ -15,16 +15,8 @@ static HELLO: &[u8] = b"Hello World!";
 // ref: https://doc.rust-lang.org/nomicon/ffi.html
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    let vga_buffer = 0xb8000 as *mut u8;
-
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            // offsetはptr型のmethodで、引数にisizeをとる.
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = if i % 2 == 0 { 0xc } else { 0x9 }
-        }
-    }
-
+    let mut w = writer::Writer::new();
+    w.write("Motoyuki Kimura");
     loop {}
 }
 
