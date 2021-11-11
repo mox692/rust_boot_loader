@@ -3,9 +3,9 @@
 // 通常のエントリポイント(start)を使用しない.
 // ref: https://os.phil-opp.com/ja/freestanding-rust-binary/#start-attribute
 #![no_main]
+#![feature(panic_info_message)]
 
 use core::panic::PanicInfo;
-
 mod writer;
 
 // リンカに_startというシンボルでエントリを渡すために、コンパイラにmanglingを禁止させる
@@ -17,6 +17,7 @@ mod writer;
 pub extern "C" fn _start() -> ! {
     let mut w = writer::Writer::new();
     w.write("Motoyuki Kimura\nHelloworld!!");
+
     loop {}
 }
 
@@ -24,6 +25,9 @@ pub extern "C" fn _start() -> ! {
 // no_std環境では、標準ライブラリに付属するpanicハンドラが使用できないので、
 // 自作する. 戻り値はnever型 ref: https://doc.rust-lang.org/1.30.0/book/first-edition/functions.html#diverging-functions
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn _panic(_info: &PanicInfo) -> ! {
+    let mut w = writer::Writer::new();
+    w.write("Panic Happen!\n");
+    w.write(_info.message().unwrap().as_str().unwrap());
     loop {}
 }
