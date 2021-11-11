@@ -16,7 +16,7 @@ mod writer;
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     let mut w = writer::Writer::new();
-    w.write("Motoyuki Kimura");
+    w.write("Motoyuki Kimura\nHelloworld!!");
     loop {}
 }
 
