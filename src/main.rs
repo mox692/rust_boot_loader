@@ -15,9 +15,7 @@ mod writer;
 // ref: https://doc.rust-lang.org/nomicon/ffi.html
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    let mut w = writer::Writer::new();
-    w.write("Motoyuki Kimura\nHelloworld!!");
-
+    println!("this text form macro");
     loop {}
 }
 
@@ -26,8 +24,9 @@ pub extern "C" fn _start() -> ! {
 // 自作する. 戻り値はnever型 ref: https://doc.rust-lang.org/1.30.0/book/first-edition/functions.html#diverging-functions
 #[panic_handler]
 fn _panic(_info: &PanicInfo) -> ! {
-    let mut w = writer::Writer::new();
-    w.write("Panic Happen!\n");
-    w.write(_info.message().unwrap().as_str().unwrap());
+    println!(
+        "panic happen!\n{}",
+        _info.message().unwrap().as_str().unwrap()
+    );
     loop {}
 }
