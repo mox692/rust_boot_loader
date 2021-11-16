@@ -5,9 +5,6 @@ use lazy_static::lazy_static;
 use spin::Mutex;
 
 lazy_static! {
-    /// A global `Writer` instance that can be used for printing to the VGA text buffer.
-    ///
-    /// Used by the `print!` and `println!` macros.
     pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer::new());
 }
 
@@ -101,4 +98,12 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args);
+}
+
+#[test_case]
+// println!マクロのtest
+fn test_println_many() {
+    for _ in 0..200 {
+        println!("test_println_many output");
+    }
 }

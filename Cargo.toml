@@ -7,7 +7,18 @@ edition = "2018"
 [dependencies]
 bootloader = "0.9.8"
 spin = "0.5.2"
+x86_64 = "0.14.2"
+uart_16550 = "0.2.0"
 
 [dependencies.lazy_static]
 version = "1.0"
 features = ["spin_no_std"]
+
+
+[package.metadata.bootimage]
+# MEMO: qemuがサポートしてるexitデバイス機能を使用する.
+#       test-argsが中でどう使用されてるかは、bootimageのlibを読まないとわからん.
+# -serialで、serialをstdioに出力
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio", "-display", "none"]
+# MEMO: 成功とみなす終了コードを設定.
+test-success-exit-code = 33  
